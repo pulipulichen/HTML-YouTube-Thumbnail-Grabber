@@ -1,5 +1,5 @@
 {
-  "name": "YouTube 封面抓取器",
+  "name": "YouTube 封面抓取器 Thumbnail Cover",
   "short_name": "YT封面抓取",
   "description": "輸入影片網址（支援 Shorts 與各種參數格式），自動取得封面",
   "start_url": ".",
