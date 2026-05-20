@@ -21,3 +21,4 @@
 ### Testing
 - Updated existing Playwright tests to use stable element selectors.
 - Added E2E coverage for i18n initialization, runtime language switching, and language persistence after reload.
+- Added Playwright E2E coverage for the sample URL buttons to verify one-click autofill and thumbnail fetching for both `4:3` and `16:9` demo videos.
