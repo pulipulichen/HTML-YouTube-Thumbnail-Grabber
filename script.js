@@ -127,6 +127,18 @@ document.getElementById("videoUrl").addEventListener("keypress", function (e) {
     }
 });
 
+document.querySelectorAll(".sample-url-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+        const sampleUrl = button.getAttribute("data-video-url");
+        if (!sampleUrl) {
+            return;
+        }
+
+        document.getElementById("videoUrl").value = sampleUrl;
+        getThumbnails();
+    });
+});
+
 document.getElementById("getThumbnailsBtn").addEventListener("click", getThumbnails);
 document.getElementById("clearInputBtn").addEventListener("click", clearInput);
 document.getElementById("copyMaxResBtn").addEventListener("click", () => copyToClipboard("maxResImg"));

@@ -8,6 +8,7 @@
 - Added GitHub Actions workflow at `.github/workflows/e2e.yml` to run Docker-based Playwright E2E tests on push, pull request, and manual dispatch.
 - Added CI failure artifact uploads for `playwright-report/` and `playwright-report-videos/` in the GitHub Actions E2E workflow.
 - Added `.jshintrc` and `.jslintrc` project lint configuration files.
+- Added clickable sample YouTube URLs for both `4:3` and `16:9` videos, with one-click auto-fill and thumbnail fetch behavior in the input section.
 
 ### Changed
 - Refactored frontend interactions in `index.html` and `script.js` to use module-based scripts, explicit button IDs, and event listeners instead of inline click handlers.

@@ -10,7 +10,10 @@ const en = {
         subtitle: "Paste a video URL (supports Shorts and URL parameters) to get thumbnails instantly."
     },
     input: {
-        placeholder: "Paste a YouTube video URL"
+        placeholder: "Paste a YouTube video URL",
+        sampleLabel: "Try sample URLs:",
+        sample43: "4:3 sample video",
+        sample169: "16:9 widescreen sample video"
     },
     actions: {
         fetch: "Fetch Thumbnails",

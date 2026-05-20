@@ -10,7 +10,10 @@ const zhTW = {
         subtitle: "輸入影片網址（支援 Shorts 與各種參數格式），自動取得封面。"
     },
     input: {
-        placeholder: "請貼上 YouTube 影片網址"
+        placeholder: "請貼上 YouTube 影片網址",
+        sampleLabel: "示範網址：",
+        sample43: "4:3 比例示範影片",
+        sample169: "16:9 寬螢幕示範影片"
     },
     actions: {
         fetch: "立即抓取",
