@@ -1,7 +1,12 @@
-/**
- * 強化的影片 ID 提取邏輯
- * 支援: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/shorts/ID, youtube.com/embed/ID
- */
+import { initI18n, t } from "./scripts/modules/i18n.js";
+
+let maxResFallbackInUse = false;
+
+function updateMaxResHint() {
+    const maxResHint = document.getElementById("maxResHint");
+    maxResHint.innerText = maxResFallbackInUse ? t("results.maxResFallbackHint") : t("results.maxResHint");
+}
+
 function extractVideoId(url) {
     if (!url) return false;
     url = url.trim();
@@ -37,24 +42,24 @@ function extractVideoId(url) {
 }
 
 function getThumbnails() {
-    const urlInput = document.getElementById('videoUrl').value;
+    const urlInput = document.getElementById("videoUrl").value;
     const videoId = extractVideoId(urlInput);
-    const errorMsg = document.getElementById('errorMessage');
-    const results = document.getElementById('results');
-    const emptyState = document.getElementById('emptyState');
-    const maxResHint = document.getElementById('maxResHint');
+    const errorMsg = document.getElementById("errorMessage");
+    const results = document.getElementById("results");
+    const emptyState = document.getElementById("emptyState");
 
     if (!videoId) {
-        errorMsg.classList.remove('hidden');
-        results.classList.add('hidden');
-        emptyState.classList.remove('hidden');
+        errorMsg.classList.remove("hidden");
+        results.classList.add("hidden");
+        emptyState.classList.remove("hidden");
         return;
     }
 
-    errorMsg.classList.add('hidden');
-    emptyState.classList.add('hidden');
-    results.classList.remove('hidden');
-    maxResHint.innerText = "解析度: 1280 x 720 (若影片支援)";
+    errorMsg.classList.add("hidden");
+    emptyState.classList.add("hidden");
+    results.classList.remove("hidden");
+    maxResFallbackInUse = false;
+    updateMaxResHint();
 
     const images = {
         maxRes: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
@@ -65,36 +70,39 @@ function getThumbnails() {
     };
 
     // 更新預覽圖與連結
-    document.getElementById('maxResImg').src = images.maxRes;
-    document.getElementById('maxResLink').href = images.maxRes;
+    document.getElementById("maxResImg").src = images.maxRes;
+    document.getElementById("maxResLink").href = images.maxRes;
     
-    document.getElementById('sdImg').src = images.sd;
-    document.getElementById('sdLink').href = images.sd;
+    document.getElementById("sdImg").src = images.sd;
+    document.getElementById("sdLink").href = images.sd;
     
-    document.getElementById('hqImg').src = images.hq;
-    document.getElementById('hqLink').href = images.hq;
+    document.getElementById("hqImg").src = images.hq;
+    document.getElementById("hqLink").href = images.hq;
     
-    document.getElementById('mqImg').src = images.mq;
-    document.getElementById('mqLink').href = images.mq;
+    document.getElementById("mqImg").src = images.mq;
+    document.getElementById("mqLink").href = images.mq;
     
-    document.getElementById('defImg').src = images.def;
-    document.getElementById('defLink').href = images.def;
+    document.getElementById("defImg").src = images.def;
+    document.getElementById("defLink").href = images.def;
 
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     // 處理 MaxRes 可能不存在的情況 (回傳 404 時)
-    const maxResImg = document.getElementById('maxResImg');
+    const maxResImg = document.getElementById("maxResImg");
     maxResImg.onerror = function() {
         this.src = images.hq; // 降級顯示
-        maxResHint.innerText = "提示: 該影片不支援 1280x720 封面，已顯示 HQ 版本";
+        maxResFallbackInUse = true;
+        updateMaxResHint();
     };
 }
 
 function clearInput() {
-    document.getElementById('videoUrl').value = '';
-    document.getElementById('results').classList.add('hidden');
-    document.getElementById('emptyState').classList.remove('hidden');
-    document.getElementById('errorMessage').classList.add('hidden');
+    document.getElementById("videoUrl").value = "";
+    document.getElementById("results").classList.add("hidden");
+    document.getElementById("emptyState").classList.remove("hidden");
+    document.getElementById("errorMessage").classList.add("hidden");
+    maxResFallbackInUse = false;
+    updateMaxResHint();
 }
 
 function copyToClipboard(imgId) {
@@ -106,28 +114,36 @@ function copyToClipboard(imgId) {
     document.execCommand("copy");
     document.body.removeChild(dummy);
 
-    const toast = document.getElementById('toast');
-    toast.style.opacity = '1';
+    const toast = document.getElementById("toast");
+    toast.style.opacity = "1";
     setTimeout(() => {
-        toast.style.opacity = '0';
+        toast.style.opacity = "0";
     }, 2000);
 }
 
-document.getElementById('videoUrl').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
+document.getElementById("videoUrl").addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
         getThumbnails();
     }
 });
 
+document.getElementById("getThumbnailsBtn").addEventListener("click", getThumbnails);
+document.getElementById("clearInputBtn").addEventListener("click", clearInput);
+document.getElementById("copyMaxResBtn").addEventListener("click", () => copyToClipboard("maxResImg"));
+window.addEventListener("thumbnail-grabber-language-change", updateMaxResHint);
+
+initI18n("languageSelect");
+updateMaxResHint();
+
 // Register Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
             .then(registration => {
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                console.log("ServiceWorker registration successful with scope: ", registration.scope);
             })
             .catch(error => {
-                console.log('ServiceWorker registration failed: ', error);
+                console.log("ServiceWorker registration failed: ", error);
             });
     });
 }

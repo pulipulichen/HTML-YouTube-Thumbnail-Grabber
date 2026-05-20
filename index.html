@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube 封面圖快速抓取工具 - Thumbnail Cover</title>
+    <title data-i18n="meta.title">YouTube Thumbnail Grabber - Thumbnail Cover</title>
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -22,30 +22,38 @@
     <div class="max-w-4xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-10">
+            <div class="flex justify-end mb-4">
+                <label for="languageSelect" class="mr-2 text-sm text-gray-600" data-i18n="language.label">Language</label>
+                <select id="languageSelect" class="px-3 py-1 rounded-lg border border-gray-300 bg-white text-sm">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                </select>
+            </div>
             <h1 class="text-4xl font-bold text-gray-800 mb-4">
-                <i class="fab fa-youtube text-red-600 mr-2"></i>YouTube 封面抓取器
+                <i class="fab fa-youtube text-red-600 mr-2"></i><span data-i18n="header.title">YouTube Thumbnail Grabber</span>
             </h1>
-            <p class="text-gray-600">輸入影片網址（支援 Shorts 與各種參數格式），自動取得封面</p>
+            <p class="text-gray-600" data-i18n="header.subtitle">Paste a video URL (supports Shorts and URL parameters) to get thumbnails instantly.</p>
         </div>
 
         <!-- Input Section -->
         <div class="glass-card rounded-2xl p-6 shadow-xl mb-8">
             <div class="flex flex-col md:flex-row gap-4">
-                <input type="text" id="videoUrl" 
-                    placeholder="請貼上 YouTube 影片網址" 
+                <input type="text" id="videoUrl"
+                    data-i18n-placeholder="input.placeholder"
+                    placeholder="Paste a YouTube video URL"
                     class="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-red-500 focus:outline-none transition-all">
                 <div class="flex gap-2">
-                    <button onclick="getThumbnails()" 
+                    <button id="getThumbnailsBtn"
                         class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl font-medium transition-colors shadow-lg flex items-center justify-center">
-                        <i class="fas fa-search mr-2"></i> 立即抓取
+                        <i class="fas fa-search mr-2"></i><span data-i18n="actions.fetch">Fetch Thumbnails</span>
                     </button>
-                    <button onclick="clearInput()" 
+                    <button id="clearInputBtn"
                         class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-3 rounded-xl font-medium transition-colors">
-                        <i class="fas fa-redo"></i>
+                        <i class="fas fa-redo"></i><span class="sr-only" data-i18n="actions.clear">Clear</span>
                     </button>
                 </div>
             </div>
-            <p id="errorMessage" class="text-red-500 mt-3 text-sm hidden">請輸入有效的 YouTube 網址（例如帶有 v=ID 或 youtu.be/ID）</p>
+            <p id="errorMessage" class="text-red-500 mt-3 text-sm hidden" data-i18n="messages.invalidUrl">Please enter a valid YouTube URL (for example with v=ID or youtu.be/ID).</p>
         </div>
 
         <!-- Results Section -->
@@ -54,21 +62,21 @@
             <!-- Main Preview (Max Res) -->
             <div id="maxResSection" class="glass-card rounded-2xl p-6 shadow-lg overflow-hidden">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-gray-800">最高畫質 (Maximum Resolution)</h2>
-                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">推薦</span>
+                    <h2 class="text-xl font-bold text-gray-800" data-i18n="results.maxResTitle">Maximum Resolution</h2>
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded" data-i18n="results.recommended">Recommended</span>
                 </div>
                 <div class="thumbnail-container rounded-xl overflow-hidden bg-gray-200 aspect-video relative group">
-                    <img id="maxResImg" src="" alt="Max Res Thumbnail" class="w-full h-full object-cover">
+                    <img id="maxResImg" src="" alt="Max Res Thumbnail" data-i18n-aria-label="results.maxResImageAlt" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
                         <a id="maxResLink" href="#" target="_blank" class="bg-white text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-100">
-                            查看原圖
+                            <span data-i18n="results.viewOriginal">View Original</span>
                         </a>
                     </div>
                 </div>
                 <div class="mt-4 flex justify-between items-center">
-                    <p id="maxResHint" class="text-sm text-gray-500">解析度: 1280 x 720 (若影片支援)</p>
-                    <button onclick="copyToClipboard('maxResImg')" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                        <i class="far fa-copy mr-1"></i> 複製圖片網址
+                    <p id="maxResHint" class="text-sm text-gray-500" data-i18n="results.maxResHint">Resolution: 1280 x 720 (if available)</p>
+                    <button id="copyMaxResBtn" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        <i class="far fa-copy mr-1"></i><span data-i18n="results.copyImageUrl">Copy image URL</span>
                     </button>
                 </div>
             </div>
@@ -77,30 +85,30 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Standard Quality -->
                 <div class="glass-card rounded-2xl p-5 shadow-md">
-                    <h3 class="font-bold text-gray-700 mb-3">標準畫質 (Standard)</h3>
+                    <h3 class="font-bold text-gray-700 mb-3" data-i18n="results.standardTitle">Standard</h3>
                     <img id="sdImg" class="w-full rounded-lg mb-3 border" src="">
-                    <a id="sdLink" href="#" target="_blank" class="text-sm text-red-600 hover:underline">下載 640 x 480</a>
+                    <a id="sdLink" href="#" target="_blank" class="text-sm text-red-600 hover:underline" data-i18n="results.downloadSd">Download 640 x 480</a>
                 </div>
 
                 <!-- High Quality -->
                 <div class="glass-card rounded-2xl p-5 shadow-md">
-                    <h3 class="font-bold text-gray-700 mb-3">高畫質 (HQ)</h3>
+                    <h3 class="font-bold text-gray-700 mb-3" data-i18n="results.highTitle">High (HQ)</h3>
                     <img id="hqImg" class="w-full rounded-lg mb-3 border" src="">
-                    <a id="hqLink" href="#" target="_blank" class="text-sm text-red-600 hover:underline">下載 480 x 360</a>
+                    <a id="hqLink" href="#" target="_blank" class="text-sm text-red-600 hover:underline" data-i18n="results.downloadHq">Download 480 x 360</a>
                 </div>
 
                 <!-- Medium Quality -->
                 <div class="glass-card rounded-2xl p-5 shadow-md">
-                    <h3 class="font-bold text-gray-700 mb-3">中畫質 (MQ)</h3>
+                    <h3 class="font-bold text-gray-700 mb-3" data-i18n="results.mediumTitle">Medium (MQ)</h3>
                     <img id="mqImg" class="w-full rounded-lg mb-3 border" src="">
-                    <a id="mqLink" href="#" target="_blank" class="text-sm text-red-600 hover:underline">下載 320 x 180</a>
+                    <a id="mqLink" href="#" target="_blank" class="text-sm text-red-600 hover:underline" data-i18n="results.downloadMq">Download 320 x 180</a>
                 </div>
 
                 <!-- Default Thumbnail -->
                 <div class="glass-card rounded-2xl p-5 shadow-md">
-                    <h3 class="font-bold text-gray-700 mb-3">預覽縮圖 (Default)</h3>
+                    <h3 class="font-bold text-gray-700 mb-3" data-i18n="results.defaultTitle">Default</h3>
                     <img id="defImg" class="w-full rounded-lg mb-3 border max-w-[120px]" src="">
-                    <a id="defLink" href="#" target="_blank" class="text-sm text-red-600 hover:underline">下載 120 x 90</a>
+                    <a id="defLink" href="#" target="_blank" class="text-sm text-red-600 hover:underline" data-i18n="results.downloadDefault">Download 120 x 90</a>
                 </div>
             </div>
         </div>
@@ -108,15 +116,15 @@
         <!-- Empty State -->
         <div id="emptyState" class="text-center py-20 bg-white/50 rounded-2xl border-2 border-dashed border-gray-300">
             <i class="fas fa-image text-gray-400 text-5xl mb-4"></i>
-            <p class="text-gray-500">輸入網址後，封面圖片將會在此顯示</p>
+            <p class="text-gray-500" data-i18n="emptyState.description">After entering a URL, thumbnails will be shown here.</p>
         </div>
     </div>
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl transition-all opacity-0 pointer-events-none z-50">
-        已複製圖片網址！
+        <span data-i18n="messages.copied">Image URL copied.</span>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

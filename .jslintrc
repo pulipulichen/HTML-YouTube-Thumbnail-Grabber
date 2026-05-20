@@ -1,0 +1,9 @@
+{
+  "esversion": 11,
+  "browser": true,
+  "node": true,
+  "devel": true,
+  "module": true,
+  "asi": true,
+  "unused": false
+}
